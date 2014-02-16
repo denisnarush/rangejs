@@ -1,10 +1,3 @@
-/*
- * RangeJS
- * TODO: methodUpdate
- * TODO: IE8+
- * TODO: touch
-*/
-
 (function () {
   "use strict";
 
