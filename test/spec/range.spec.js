@@ -1,5 +1,5 @@
 (function () {
-  describe('RangeJS', function () {
+  describe('Range', function () {
     var r;
     beforeEach(function () {
       r = new Range();

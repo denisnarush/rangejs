@@ -15,6 +15,7 @@ var extend = function (target) {
 
 /*
  * range
+ * Denis Narush
 */
 
 
@@ -35,6 +36,9 @@ var makeOptions = function (options, defaults) {
         opt.type = "dynamic";
     }
 
+    if (typeof opt.onValueChange === 'function') {
+        this.onValueChange = opt.onValueChange;
+    }
     return opt;
 };
 
@@ -86,20 +90,24 @@ var render = function () {
         labels: []
     };
 
+    container.appendChild(this.nodes.root);
+    this.options.width = this.nodes.root.clientWidth;
+
     // render labels
     for (var i = 0, c = this.options.value.length; i < c; i += 1) {
         var label = document.createElement('div');
+        var labelPositionX = calcPosition.call(this, this.options.value[i]);
+
         label.className = this.options.labelsClassName;
-        label.style.left = calcPosition.call(this, this.options.value[i]) + 'px';
+        label.style.left = labelPositionX + 'px';
         label.setAttribute('data-id', i);
         label.setAttribute('data-value', this.options.value[i]);
 
         this.nodes.labels[i] = label;
+        this.labelsPosition[i] = labelPositionX;
 
         this.nodes.root.appendChild(this.nodes.labels[i]);
     }
-
-    container.appendChild(this.nodes.root);
 };
 
 // handlers
@@ -108,36 +116,52 @@ var onDocumentMouseMove = function (e) {
 
     var self = selectedElement.el.parentNode.range;
     var mouseD = e.clientX - startState.startMouseX;
+    var isValueChange = false;
 
     selectedElement.newX = selectedElement.x + mouseD;
+
+    if (selectedElement.newX === selectedElement.prevX) { return; }
+
+    if (selectedElement.newX > self.options.width ||
+        selectedElement.newX < 0) { return; }
+
+    selectedElement.prevX = selectedElement.newX;
     selectedElement.newVal = calcValue.call(self, selectedElement.newX);
+    self.labelsPosition[selectedElement.id] = selectedElement.newX;
 
-    if (selectedElement.newVal !== selectedElement.val &&
-        selectedElement.newVal <= self.options.max &&
-        selectedElement.newVal >= self.options.min) {
-
+    if (selectedElement.newVal !== selectedElement.val) {
         selectedElement.val = selectedElement.newVal;
-        selectedElement.el.style.left = calcPosition.call(self, selectedElement.val) + 'px';
-
-        self.labelsPosition[selectedElement.id] = selectedElement.newX;
         self.options.value[selectedElement.id] = selectedElement.val;
+        isValueChange = true;
     }
+
+    if (self.options.step === true) {
+        selectedElement.el.style.left = calcPosition.call(self, selectedElement.val) + 'px';
+    } else {
+        selectedElement.el.style.left = selectedElement.newX + 'px';
+    }
+
+    if (isValueChange) { self.onValueChange(); }
+};
+
+var onRootMouseUp = function (e) {
+    console.log('onRootMouseUp:');
 };
 
 var onRootMouseDown = function (e) {
-    console.log('onRootMouseDown:');
     var self = this.range;
     var target = e.target;
     var targetClass = e.target.getAttribute('class');
     var targetId = parseInt(target.getAttribute('data-id'));
 
     if (targetClass.indexOf(self.options.labelsClassName) !== -1) {
-        console.log('label is clicked');
+        console.log('onRootMouseDown: label is clicked');
 
         selectedElement = {
             el: target,
             id: targetId,
             x: self.labelsPosition[targetId],
+            prev: self.labelsPosition[targetId],
             val: self.options.value[targetId]
         };
 
@@ -146,10 +170,9 @@ var onRootMouseDown = function (e) {
         };
 
         document.addEventListener('mousemove', onDocumentMouseMove);
+        return;
     }
-};
-
-var onRootMouseUp = function (e) {
+    console.log('onRootMouseDown');
 };
 
 var onRootKeyDown = function (e) {
@@ -158,30 +181,36 @@ var onRootKeyDown = function (e) {
 var onRootDblClick = function (e) {
 };
 
-
 var onDocumentMouseUp = function (e) {
-    console.log('onDocumentMouseUp:');
+    if (!selectedElement) { return; }
     selectedElement = null;
     startState = null;
-    return document.removeEventListener('mousemove', onDocumentMouseMove);
+    document.removeEventListener('mousemove', onDocumentMouseMove);
+    console.log('onDocumentMouseUp:');
 };
 
+var onWindowResize = function (e) {
+    if (this.options.width !== this.nodes.root.clientWidth) {
+        console.log('root width is changed');
+        this.options.width = this.nodes.root.clientWidth;
+    }
+};
 
 // add event listeners
 var bindEvents = function () {
+    var self = this;
     this.nodes.root.addEventListener('mousedown', onRootMouseDown);
+    this.nodes.root.addEventListener('mouseup', onRootMouseUp);
     document.addEventListener('mouseup', onDocumentMouseUp);
+    window.addEventListener('resize', function () {
+        return onWindowResize.call(self);
+    });
 };
 
 
 // init
 var init = function () {
-    var opt = this.options;
-
     this.labelsPosition = [];
-    for (var i = 0; i <= opt.value.length - 1; i += 1) {
-        this.labelsPosition[i] = calcPosition.call(this, opt.value[i]);
-    }
 
     render.call(this);
     bindEvents.call(this);
@@ -203,8 +232,9 @@ RangeJS.defaults = {
     min: 0,
     max: 10,
     value: 3,
-    width: 500,
-    labelsClassName: 'RangeJS-label'
+    step: true,
+    labelsClassName: 'RangeJS-label',
+    onValueChange: function () { console.log('value is changed'); }
 };
 
 // public
@@ -212,6 +242,7 @@ RangeJS.prototype = {
     getValue: function () {
         return this.options.value;
     },
+    onValueChange: function () {},
     destroy: function () {}
 };
 
