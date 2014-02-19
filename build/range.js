@@ -27,7 +27,11 @@
   var startState = {};
   
   var makeOptions = function (options, defaults) {
-      var opt = extend({}, defaults, options);
+      var obj = {
+          isWebkitTransform: document.body.style.hasOwnProperty('webkitTransform')
+      };
+  
+      var opt = extend(obj, defaults, options);
   
       if (typeof opt.value === 'number') {
           opt.value = [opt.value];
@@ -42,7 +46,15 @@
       if (typeof opt.onValueChange === 'function') {
           this.onValueChange = opt.onValueChange;
       }
+  
       return opt;
+  };
+  
+  var TranslateX = function (element, value) {
+      if (this.options.isWebkitTransform) {
+          return element.style.webkitTransform = ['translate(', value, 'px)'].join('');
+      }
+      return element.style.left = value + 'px';
   };
   
   var calcPosition = function (value) {
@@ -50,7 +62,7 @@
       var delta = opt.max - opt.min;
       var fact = opt.width / delta;
   
-      return (value - opt.min) * fact;
+      return Math.round((value - opt.min) * fact, 10);
   };
   
   var calcValue = function (position) {
@@ -69,10 +81,9 @@
       if (element) {
           var index = element.getAttribute('data-id');
           if (typeof value === 'number') {
-              var position = calcPosition.call(this, value);
-              this.labelsPosition[index] = position;
-              element.style.left = position + 'px';
-              element.innerHTML = value;
+              var pos = calcPosition.call(this, value);
+              this.labelsPosition[index] = pos;
+              TranslateX.call(this, element, pos);
           }
       }
       return false;
@@ -102,9 +113,11 @@
           var labelPositionX = calcPosition.call(this, this.options.value[i]);
   
           label.className = this.options.labelsClassName;
-          label.style.left = labelPositionX + 'px';
           label.setAttribute('data-id', i);
           label.setAttribute('data-value', this.options.value[i]);
+  
+          //label.style.left = labelPositionX + 'px';
+          TranslateX.call(this, label, labelPositionX);
   
           this.nodes.labels[i] = label;
           this.labelsPosition[i] = labelPositionX;
@@ -138,11 +151,9 @@
           isValueChange = true;
       }
   
-      if (self.options.step === true) {
-          selectedElement.el.style.left = calcPosition.call(self, selectedElement.val) + 'px';
-      } else {
-          selectedElement.el.style.left = selectedElement.newX + 'px';
-      }
+      var pos = (self.options.step ? calcPosition.call(self, selectedElement.val) : selectedElement.newX);
+  
+      TranslateX.call(self, selectedElement.el, pos);
   
       if (isValueChange) { self.onValueChange(); }
   };
@@ -186,6 +197,17 @@
   
   var onDocumentMouseUp = function (e) {
       if (!selectedElement) { return; }
+  
+      var self = selectedElement.el.parentNode.range;
+      if (!self.options.step) {
+          var id = selectedElement.id;
+          var val = selectedElement.val;
+          var pos = calcPosition.call(self, val);
+          var label = self.nodes.labels[selectedElement.id];
+          TranslateX.call(self, label, pos);
+          self.labelsPosition[id] = pos;
+      }
+  
       selectedElement = null;
       startState = null;
       document.removeEventListener('mousemove', onDocumentMouseMove);
@@ -235,7 +257,7 @@
       min: 0,
       max: 10,
       value: 3,
-      step: true,
+      step: false,
       labelsClassName: 'RangeJS-label',
       onValueChange: function () { console.log('value is changed'); }
   };

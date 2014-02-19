@@ -4,6 +4,12 @@
     position: relative;
     height: .4em;
     margin: 0 auto;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 .RangeJS-label{
     background: gray;
@@ -12,11 +18,17 @@
     box-shadow: 0 0 .2em lightgray;
     cursor: pointer;
     padding: .2em;
-    margin-left: -.6em;
+    //margin-left: -.6em;
     margin-top: -.6em;
     position: absolute;
     top: 50%;
     box-sizing: border-box;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 .RangeJS-label:hover{
     background: green;
