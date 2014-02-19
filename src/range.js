@@ -74,16 +74,15 @@ var calcValue = function (position) {
 var updateIndicator = function () {
 };
 
-var updateLabelPosition = function (element, value) {
-    if (element) {
-        var index = element.getAttribute('data-id');
-        if (typeof value === 'number') {
-            var pos = calcPosition.call(this, value);
-            this.labelsPosition[index] = pos;
-            TranslateX.call(this, element, pos);
-        }
+var updateLabelsPosition = function () {
+    var c = this.nodes.labels.length;
+    for (var i = 0; i < c; i += 1) {
+        var val = this.options.value[i];
+        var pos = calcPosition.call(this, val);
+        var label = this.nodes.labels[i];
+        this.labelsPosition[i] = pos;
+        TranslateX.call(this, label, pos);
     }
-    return false;
 };
 
 // render
@@ -215,6 +214,7 @@ var onWindowResize = function (e) {
     if (this.options.width !== this.nodes.root.clientWidth) {
         console.log('root width is changed');
         this.options.width = this.nodes.root.clientWidth;
+        updateLabelsPosition.call(this);
     }
 };
 
