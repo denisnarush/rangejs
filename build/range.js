@@ -24,7 +24,7 @@
   
   // private
   var selectedElement = null;
-  var startState = {};
+  var startState = null;
   
   var makeOptions = function (options, defaults) {
       var opt = extend({}, defaults, options);
@@ -48,31 +48,42 @@
       return opt;
   };
   
-  var TranslateX = function (element, value) {
-      if (this.isWebkitTransform) {
-          return element.style.webkitTransform = ['translate(', value, 'px)'].join('');
-      }
-      return element.style.left = value + 'px';
+  var getRootWidth = function () {
+      return (startState ? startState.containerWidth : this.nodes.root.clientWidth);
   };
   
-  var calcPosition = function (value) {
+  //from value to label position
+  var calcPosition = function (value, px) {
       var opt = this.options;
       var delta = opt.max - opt.min;
       var fact = opt.width / delta;
   
-      return Math.round((value - opt.min) * fact, 10);
+      if (startState && px) {
+          return (value - opt.min) / (getRootWidth.call(this) / 100);
+      }
+      return (value - opt.min) / (delta / 100);
+  
+      // return Math.round((value - opt.min) * fact, 10);
   };
   
+  //from label position to value
   var calcValue = function (position) {
       var pos = parseInt(position, 10);
       var opt = this.options;
       var delta = opt.max - opt.min;
       var fact = opt.width / delta;
   
-      return Math.round(pos / fact + opt.min);
+      return pos / fact + opt.min;
   };
   
   var updateIndicator = function () {
+  };
+  
+  var TranslateX = function (element, value) {
+      // if (this.isWebkitTransform) {
+      //     return element.style.webkitTransform = ['translate(', value, 'px)'].join('');
+      // }
+      return element.style.left = value + '%';
   };
   
   var updateLabelsPosition = function () {
@@ -142,13 +153,26 @@
       selectedElement.newVal = calcValue.call(self, selectedElement.newX);
       self.labelsPosition[selectedElement.id] = selectedElement.newX;
   
+      isValueChange = false;
+  
       if (selectedElement.newVal !== selectedElement.val) {
-          selectedElement.val = selectedElement.newVal;
+          if (!self.options.step) {
+              selectedElement.val = selectedElement.newVal;
+              isValueChange = true;
+          } else {
+              if (selectedElement.newVal >= selectedElement.val + self.options.step ||
+                  selectedElement.newVal === self.options.max ||
+                  selectedElement.newVal <= selectedElement.val - self.options.step ||
+                  selectedElement.newVal === self.options.min) {
+  
+                  selectedElement.val = Math.round(selectedElement.newVal, 10);
+                  isValueChange = true;
+              }
+          }
           self.options.value[selectedElement.id] = selectedElement.val;
-          isValueChange = true;
       }
   
-      var pos = (self.options.step ? calcPosition.call(self, selectedElement.val) : selectedElement.newX);
+      var pos = (self.options.step ? calcPosition.call(self, selectedElement.val) : calcPosition.call(self, selectedElement.newX, true));
   
       TranslateX.call(self, selectedElement.el, pos);
   
@@ -172,13 +196,14 @@
           selectedElement = {
               el: target,
               id: targetId,
-              x: self.labelsPosition[targetId],
-              prev: self.labelsPosition[targetId],
+              x: e.clientX,
+              prev: e.clientX,
               val: self.options.value[targetId]
           };
   
           startState = {
-              startMouseX: e.clientX
+              startMouseX: e.clientX,
+              containerWidth: self.container.clientWidth
           };
   
           document.addEventListener('mousemove', onDocumentMouseMove);
@@ -195,11 +220,12 @@
   
   var onDocumentMouseUp = function (e) {
       if (!selectedElement) { return; }
-  
       var self = selectedElement.el.parentNode.range;
-      if (!self.options.step) {
+      var val = selectedElement.val;
+      selectedElement.el.setAttribute('data-value', val);
+  
+      if (self.options.step) {
           var id = selectedElement.id;
-          var val = selectedElement.val;
           var pos = calcPosition.call(self, val);
           var label = self.nodes.labels[selectedElement.id];
           TranslateX.call(self, label, pos);
@@ -212,23 +238,12 @@
       console.log('onDocumentMouseUp:');
   };
   
-  var onWindowResize = function (e) {
-      if (this.options.width !== this.nodes.root.clientWidth) {
-          console.log('root width is changed');
-          this.options.width = this.nodes.root.clientWidth;
-          updateLabelsPosition.call(this);
-      }
-  };
-  
   // add event listeners
   var bindEvents = function () {
       var self = this;
       this.nodes.root.addEventListener('mousedown', onRootMouseDown);
       this.nodes.root.addEventListener('mouseup', onRootMouseUp);
       document.addEventListener('mouseup', onDocumentMouseUp);
-      window.addEventListener('resize', function () {
-          return onWindowResize.call(self);
-      });
   };
   
   
@@ -253,9 +268,9 @@
   
   // default options
   RangeJS.defaults = {
-      min: 0,
-      max: 10,
-      value: 3,
+      min: 3,
+      max: 13,
+      value: 5,
       step: false,
       labelsClassName: 'RangeJS-label',
       onValueChange: function () { console.log('value is changed'); }
