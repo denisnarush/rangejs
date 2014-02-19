@@ -28,8 +28,15 @@
     });
 
     describe('extend', function () {
-      it('must be defined', function () {
+
+
+      it('defined', function () {
         expect(r.extend).toBeDefined();
+      });
+
+      it('with empty options must return defaults', function () {
+        var options = {};
+        expect(r.extend({}, Range.defaults, options)).toEqual(Range.defaults);
       });
     });
 

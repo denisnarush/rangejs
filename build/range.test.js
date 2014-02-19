@@ -27,11 +27,9 @@
   var startState = {};
   
   var makeOptions = function (options, defaults) {
-      var obj = {
-          isWebkitTransform: document.body.style.hasOwnProperty('webkitTransform')
-      };
+      var opt = extend({}, defaults, options);
   
-      var opt = extend(obj, defaults, options);
+      this.isWebkitTransform = document.body.style.hasOwnProperty('webkitTransform');
   
       if (typeof opt.value === 'number') {
           opt.value = [opt.value];
@@ -51,7 +49,7 @@
   };
   
   var TranslateX = function (element, value) {
-      if (this.options.isWebkitTransform) {
+      if (this.isWebkitTransform) {
           return element.style.webkitTransform = ['translate(', value, 'px)'].join('');
       }
       return element.style.left = value + 'px';

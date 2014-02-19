@@ -27,11 +27,9 @@
   var startState = {};
   
   var makeOptions = function (options, defaults) {
-      var obj = {
-          isWebkitTransform: document.body.style.hasOwnProperty('webkitTransform')
-      };
+      var opt = extend({}, defaults, options);
   
-      var opt = extend(obj, defaults, options);
+      this.isWebkitTransform = document.body.style.hasOwnProperty('webkitTransform');
   
       if (typeof opt.value === 'number') {
           opt.value = [opt.value];
@@ -51,7 +49,7 @@
   };
   
   var TranslateX = function (element, value) {
-      if (this.options.isWebkitTransform) {
+      if (this.isWebkitTransform) {
           return element.style.webkitTransform = ['translate(', value, 'px)'].join('');
       }
       return element.style.left = value + 'px';
@@ -162,6 +160,7 @@
   };
   
   var onRootMouseDown = function (e) {
+      console.log(e);
       var self = this.range;
       var target = e.target;
       var targetClass = e.target.getAttribute('class');
@@ -268,8 +267,12 @@
           return this.options.value;
       },
       onValueChange: function () {},
-      extend: extend,
-      destroy: function () {}
+      destroy: function () {
+          this.nodes.root.removeEventListener('mousedown', onRootMouseDown);
+          this.nodes.root.removeEventListener('mouseup', onRootMouseUp);
+          this.nodes.root.parentNode.removeChild(this.nodes.root);
+      },
+      extend: extend
   };
   
   window.Range = RangeJS;
