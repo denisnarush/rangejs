@@ -59,7 +59,8 @@
       var fact = opt.width / delta;
   
       if (startState && px) {
-          return (value - opt.min) / (getRootWidth.call(this) / 100);
+          console.log(value);
+          return (value) / (getRootWidth.call(this) / 100);
       }
       return (value - opt.min) / (delta / 100);
   
@@ -184,7 +185,6 @@
   };
   
   var onRootMouseDown = function (e) {
-      console.log(e);
       var self = this.range;
       var target = e.target;
       var targetClass = e.target.getAttribute('class');
