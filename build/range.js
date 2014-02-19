@@ -268,6 +268,7 @@
           return this.options.value;
       },
       onValueChange: function () {},
+      extend: extend,
       destroy: function () {}
   };
   

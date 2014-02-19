@@ -1,11 +1,20 @@
 (function () {
   describe('Range', function () {
     var r;
-    beforeEach(function () {
-      r = new Range();
-    })
-    // constructor
+    var el;
 
+    beforeEach(function () {
+      el = document.createElement('div');
+      el.setAttribute('id', 'test');
+      document.body.appendChild(el);
+      r = new Range('#test');
+    })
+
+    afterEach(function() {
+      el.parentNode.removeChild(el);
+    });
+
+    // constructor
     describe('constructor', function () {
 
       it('class', function () {
@@ -17,5 +26,20 @@
       });
 
     });
+
+    describe('extend', function () {
+      it('must be defined', function () {
+        expect(r.extend).toBeDefined();
+      });
+    });
+
+    // describe('extend', function () {
+    //   it('with empty options must return defaults', function () {
+    //     var opt;
+    //       opt = extend({},RangeJS.defaults);
+    //     expect(opt).toEqual(RangeJS.defaults);
+    //   });
+    // });
   })
+
 }());

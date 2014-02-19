@@ -151,11 +151,12 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test-dev', [
     'build-test',
+    'wrap:test',
     'jasmine:dev'
   ]);
   grunt.registerTask('test-prod', ['build-prod', 'jasmine:prod']);
 
   grunt.registerTask('test', ['test-dev']);
   grunt.registerTask('prod', ['build-prod']);
-  grunt.registerTask('default', ['build-dev', 'build-test', 'jshint']);
+  grunt.registerTask('default', ['build-dev', 'jshint']);
 };
