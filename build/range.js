@@ -29,8 +29,6 @@
   var makeOptions = function (options, defaults) {
       var opt = extend({}, defaults, options);
   
-      this.isWebkitTransform = document.body.style.hasOwnProperty('webkitTransform');
-  
       if (typeof opt.value === 'number') {
           opt.value = [opt.value];
           opt.type = 'single';
@@ -56,15 +54,12 @@
   var calcPosition = function (value, px) {
       var opt = this.options;
       var delta = opt.max - opt.min;
-      var fact = opt.width / delta;
   
       if (startState && px) {
-          console.log(value);
           return (value) / (getRootWidth.call(this) / 100);
       }
-      return (value - opt.min) / (delta / 100);
   
-      // return Math.round((value - opt.min) * fact, 10);
+      return (value - opt.min) / (delta / 100);
   };
   
   //from label position to value
@@ -72,7 +67,7 @@
       var pos = parseInt(position, 10);
       var opt = this.options;
       var delta = opt.max - opt.min;
-      var fact = opt.width / delta;
+      var fact = getRootWidth.call(this) / delta;
   
       return pos / fact + opt.min;
   };
@@ -81,14 +76,12 @@
   };
   
   var TranslateX = function (element, value) {
-      // if (this.isWebkitTransform) {
-      //     return element.style.webkitTransform = ['translate(', value, 'px)'].join('');
-      // }
       return element.style.left = value + '%';
   };
   
   var updateLabelsPosition = function () {
       var c = this.nodes.labels.length;
+  
       for (var i = 0; i < c; i += 1) {
           var val = this.options.value[i];
           var pos = calcPosition.call(this, val);
@@ -103,10 +96,8 @@
       var container = this.container;
   
       var root = document.createElement('div');
-      root.className = 'RangeJS-container';
-      root.style.width = this.options.width + 'px';
-  
       root.range = this;
+      root.className = 'RangeJS-container';
   
       this.nodes = {
           root: root,
@@ -125,7 +116,7 @@
           label.setAttribute('data-id', i);
           label.setAttribute('data-value', this.options.value[i]);
   
-          //label.style.left = labelPositionX + 'px';
+          // set position
           TranslateX.call(this, label, labelPositionX);
   
           this.nodes.labels[i] = label;
@@ -181,23 +172,24 @@
   };
   
   var onRootMouseUp = function (e) {
-      console.log('onRootMouseUp:');
+      // console.log('onRootMouseUp:');
   };
   
   var onRootMouseDown = function (e) {
       var self = this.range;
       var target = e.target;
-      var targetClass = e.target.getAttribute('class');
-      var targetId = parseInt(target.getAttribute('data-id'));
+      var targetClass = target.getAttribute('class');
+      var targetId = parseInt(target.getAttribute('data-id'), 10);
   
       if (targetClass.indexOf(self.options.labelsClassName) !== -1) {
-          console.log('onRootMouseDown: label is clicked');
+          // console.log('onRootMouseDown: label is clicked');
+          var selectedElementPositionX = target.offsetLeft + target.clientWidth / 2;
   
           selectedElement = {
               el: target,
               id: targetId,
-              x: e.clientX,
-              prev: e.clientX,
+              x: selectedElementPositionX,
+              prev: selectedElementPositionX,
               val: self.options.value[targetId]
           };
   
@@ -209,7 +201,7 @@
           document.addEventListener('mousemove', onDocumentMouseMove);
           return;
       }
-      console.log('onRootMouseDown');
+      // console.log('onRootMouseDown');
   };
   
   var onRootKeyDown = function (e) {
@@ -222,6 +214,7 @@
       if (!selectedElement) { return; }
       var self = selectedElement.el.parentNode.range;
       var val = selectedElement.val;
+  
       selectedElement.el.setAttribute('data-value', val);
   
       if (self.options.step) {
@@ -234,8 +227,9 @@
   
       selectedElement = null;
       startState = null;
+  
       document.removeEventListener('mousemove', onDocumentMouseMove);
-      console.log('onDocumentMouseUp:');
+      // console.log('onDocumentMouseUp:');
   };
   
   // add event listeners
@@ -273,7 +267,7 @@
       value: 5,
       step: false,
       labelsClassName: 'RangeJS-label',
-      onValueChange: function () { console.log('value is changed'); }
+      onValueChange: function () { /*console.log('value is changed'); */ }
   };
   
   // public
