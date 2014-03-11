@@ -138,7 +138,7 @@
   
       var pos = (self.options.step ? calcPosition.call(self, selectedElement.val) : calcPosition.call(self, selectedElement.newX, true));
   
-      window.webkitRequestAnimationFrame(translateX.bind(self, selectedElement.el, pos));
+      translateX.call(self, selectedElement.el, pos);
   
       if (isValueChange) { self.onValueChange(); }
   };
