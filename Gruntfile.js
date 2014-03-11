@@ -2,6 +2,8 @@ module.exports = function (grunt) {
   'use strict';
 
   var sourceJs = [
+    'src/helper/helper.js',
+    'src/handlers.js',
     'src/range.js'
   ];
 
@@ -74,7 +76,7 @@ module.exports = function (grunt) {
     },
 
     jshint:{
-      all:sourceJs,
+      afterconcat:['build/range.js'],
       options:{
         "globals": {
           "window": true,
@@ -140,6 +142,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build-dev', [
     'concat:dev',
+    'jshint',
     'wrap:dev'
   ]);
 
@@ -158,5 +161,5 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', ['test-dev']);
   grunt.registerTask('prod', ['build-prod']);
-  grunt.registerTask('default', ['build-dev', 'jshint']);
+  grunt.registerTask('default', ['build-dev']);
 };
