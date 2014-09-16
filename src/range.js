@@ -1,4 +1,5 @@
-(function () {
+//(function () {
+
     // constructor
     var RangeJS = function (element, options) {
 
@@ -48,4 +49,5 @@
     };
 
     Range = RangeJS;
-})()
+
+// })()

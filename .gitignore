@@ -4,3 +4,4 @@ node_modules
 .idea
 test/report
 test.html
+bower_components
