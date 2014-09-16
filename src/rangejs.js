@@ -4,13 +4,33 @@
     var RangeJS = function (element, options) {
 
         /* --------
-         * if no element passed
-         * create new element
+         * element is appended to the DOM
         */
-        if (!element) {
-            element = document.createElement('div');
+        this.appended = false;
+
+        /* --------
+         * Range container element
+        */
+        this.container = document.createElement('div');
+
+        /* --------
+         * if element is String
+        */
+        if (typeof element === 'string') {
+            element = document.querySelector(element);
         }
 
+        /* --------
+         * if element is DOM Element
+        */
+        if (element instanceof Element) {
+
+            if (element.parentNode || element.parentElement) {
+                this.appended = true;
+            }
+
+            this.container = element;
+        }
 
         // this.labelsPosition = [];
         // this.container = document.querySelector(element);
@@ -36,12 +56,41 @@
 
     // public
     RangeJS.prototype = {
+        /* --------
+         * Append container to the DOM
+        */
+        append: function (element) {
+
+            /* --------
+             * Don't append twice
+            */
+            if (this.appended) {
+                return false;
+            }
+
+            /* --------
+             * if element is String
+            */
+            if (typeof element === 'string'){
+                element = document.querySelector(element);
+            }
+
+            /* --------
+             * if element is DOM Element
+            */
+            if (element instanceof Element) {
+                element.appendChild(this.container);
+                this.appended = true;
+            }
+
+            return this.appended;
+        }
         // getValue: function () {
         //     return this.options.value;
         // },
-        destroy: function () {
+        // destroy: function () {
             // destroy all events, html
-        }
+        // }
     };
 
     Range = RangeJS;
