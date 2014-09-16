@@ -21,15 +21,24 @@ create instance:
 var RangeIt = new RangeJS(document.getElementById('RangeIt'));
 ```
 
-karma
+npm
+=====
+install dependency to run karma
+```bash
+cd rangejs/
+npm install
+```
+
+run karma
 =====
 ```bash
-cd node_modules/karma/bin/
+cd rangejs/node_modules/karma/bin/
 ./karma start ../../../karma.js
 ```
 
 coverage
 =====
+open coverage.html
 ```bash
-rangejs/coverage/
+rangejs/coverage/{browser}/
 ```
