@@ -31,7 +31,7 @@
     // default options
     RangeJS.defaults = {
         min: 0,
-        max: 1
+        max: 10
     };
 
     // public

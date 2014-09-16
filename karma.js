@@ -15,8 +15,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'src/range.js',
-      'src/range.spec.js',
+      'src/rangejs.js',
+      'src/rangejs.spec.js',
     ],
 
 
@@ -37,12 +37,12 @@ module.exports = function(config) {
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     // reporters: ['progress'],
 
-    reporters: ['progress','coverage'],
+    reporters: ['progress', 'coverage'],
 
     coverageReporter: {
-        type : 'html',
-        dir : 'coverage/',
-        file : 'coverage.html'
+        type: 'html',
+        dir: 'coverage/',
+        file: 'coverage.html'
     },
 
 
