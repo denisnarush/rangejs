@@ -4,20 +4,41 @@
     var RangeJS = function (element, options) {
 
         /* --------
-         * element is appended to the DOM
+         * if passed one argument
+         * check is it an options
         */
-        this.appended = false;
+        if (arguments.length === 1) {
+            if (typeof arguments[0] === 'object') {
+                options = arguments[0];
+            }
+        }
 
         /* --------
-         * Range container element
+         * instance options
+        */
+        this.options = this.extend({}, RangeJS.defaults);
+
+        /* --------
+         * instance container
         */
         this.container = document.createElement('div');
+
+        /* --------
+         * instance container
+         * is appended to the DOM
+        */
+        this.appended = false;
 
         /* --------
          * if element is String
         */
         if (typeof element === 'string') {
-            element = document.querySelector(element);
+            try {
+                element = document.querySelector(element);
+            }
+            catch(err) {
+                console.error(err);
+            }
         }
 
         /* --------
@@ -30,6 +51,25 @@
             }
 
             this.container = element;
+        }
+
+        if (typeof options === 'object') {
+            this.options = this.extend(this.options, options);
+        }
+
+        /* --------
+         * set attribute for container
+        */
+        this.container.setAttribute('data-rangejs', '');
+
+        /* --------
+         * set css for instance
+         * if container not appended
+        */
+        if(!this.appended) {
+            this.container.style.height = this.options.height + 'px';
+            this.container.style.backgroundColor = 'orange';
+            this.container.style.position = 'relative';
         }
 
         // this.labelsPosition = [];
@@ -51,7 +91,9 @@
     // default options
     RangeJS.defaults = {
         min: 0,
-        max: 10
+        max: 10,
+        height: 2,
+        value: [3]
     };
 
     // public
@@ -84,7 +126,49 @@
             }
 
             return this.appended;
+        },
+        /* --------
+         * Extend of object
+        */
+        extend: function () {
+            var target = arguments[0];
+
+            if (typeof target !== 'object') {
+                return;
+            }
+
+            for (var i = 1; i < arguments.length; i++) {
+                for(var name in arguments[i]) {
+                    target[name] = arguments[i][name];
+                }
+            }
+
+            return target;
+        },
+        /* --------
+         * Add value
+        */
+        addValue: function (value) {
+            if (value < this.options.min || value > this.options.max) {
+                return false;
+            }
+
+            var l = this.options.value.length;
+            while (l){
+                if (this.options.value[--l] === value) {
+
+                    return false;
+                }
+            }
+
+            this.options.value.push(value);
+
+            return true;
         }
+        // refresh: function () {
+            // remove all carrets elements
+            // create create new carrets elements
+        // },
         // getValue: function () {
         //     return this.options.value;
         // },
