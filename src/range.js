@@ -8,7 +8,7 @@
          * create new element
         */
         if (!element) {
-            element = document.createElement('div');)
+            element = document.createElement('div');
         }
 
 
@@ -30,12 +30,8 @@
 
     // default options
     RangeJS.defaults = {
-        min: 3,
-        max: 13,
-        value: 5,
-        step: false,
-        labelsClassName: 'RangeJS-label',
-        onValueChange: function () { }
+        min: 0,
+        max: 1
     };
 
     // public
