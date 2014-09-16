@@ -17,7 +17,7 @@ add to head:
 
 add to body:
 ```bash
-<script type="text/javascript" src="src/rangejs.js"></script>
+<div id="RangeIt"></div>
 ```
 create instance:
 ```bash
