@@ -36,9 +36,9 @@
 
     // public
     RangeJS.prototype = {
-        getValue: function () {
-            return this.options.value;
-        },
+        // getValue: function () {
+        //     return this.options.value;
+        // },
         destroy: function () {
             // destroy all events, html
         }

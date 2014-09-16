@@ -1,8 +1,13 @@
 describe("Instance", function() {
     it("RangeIt is instanceof Range", function() {
-    	var RangeIt = new Range()
+        var RangeIt = new Range();
         expect(RangeIt instanceof Range).toBeTruthy();
     });
+
+    // it("RangeIt is instanceof Range", function() {
+    //     var RangeIt = new Range(document.createElement('div'));
+    //     expect(RangeIt instanceof Range).toBeTruthy();
+    // });
 });
 
 describe("Constructor default options", function() {
@@ -37,4 +42,16 @@ describe("Constructor default options", function() {
     it("Range default MIN value must be less then MAX value", function() {
         expect(RangeJS.defaults.min < RangeJS.defaults.max).toBeTruthy();
     });
+
+    // it("Range default destroy", function() {
+    //     expect(typeof RangeJS.prototype.destroy).toEqual('function');
+    // });
+
+    // it("Range default getValue", function() {
+    //     expect(typeof RangeJS.prototype.getValue).toEqual('function');
+    // });
+
+    // it("Range default destroy", function() {
+    //     RangeJS.prototype.destroy();
+    // });
 });
