@@ -10,30 +10,35 @@ RangeJS.defaults = {
 
 usage
 =====
-add to html:
+add to head:
 ```bash
-<div id="rangeId"></div>
 <script type="text/javascript" src="src/rangejs.js"></script>
 ```
 
+add to body:
+```bash
+<script type="text/javascript" src="src/rangejs.js"></script>
+```
 create instance:
 ```bash
-var RangeIt = new RangeJS(document.getElementById('RangeIt'));
+<script type="text/javascript">
+	var RangeIt = new RangeJS(document.getElementById('RangeIt'));
+</script>
 ```
 
 npm
 =====
 install dependency to run karma
 ```bash
-cd rangejs/
-npm install
+$ cd rangejs/
+$ npm install
 ```
 
 run karma
 =====
 ```bash
-cd rangejs/node_modules/karma/bin/
-./karma start ../../../karma.js
+$ cd rangejs/node_modules/karma/bin/
+$ ./karma start ../../../karma.js
 ```
 
 coverage
