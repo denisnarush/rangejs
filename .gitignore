@@ -5,3 +5,4 @@ node_modules
 test/report
 test.html
 bower_components
+coverage
