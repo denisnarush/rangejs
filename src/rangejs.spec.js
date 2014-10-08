@@ -20,8 +20,10 @@ describe("Instance", function() {
         });
 
     it("1.2 Element parameter can be String", function() {
-        RangeIt = new Range('body');
+        var el = document.createElement('div');
+        document.body.appendChild(el);
 
+        RangeIt = new Range('div');
         expect(RangeIt.container).toBeDefined();
     });
 
@@ -31,17 +33,18 @@ describe("Instance", function() {
             expect(RangeIt.container).toBeDefined();
         });
 
-        it("1.2.2 Create default element if query throw err", function() {
+        it("1.2.2 Don't create instance if query throw error", function() {
             RangeIt = new Range('.');
 
-            expect(RangeIt.container).toBeDefined();
+            expect(RangeIt instanceof Range).toBe(false);
         });
 
-    it("1.3 Element parameter can be queried DOM Element or new DOM Element", function() {
-        RangeIt = new Range(document.querySelector('body'));
-        expect(RangeIt.container).toBeDefined();
+    it("1.3 Element parameter can be new DOM Element", function() {
+        var el = document.createElement('div');
+        document.body.appendChild(el);
 
-        RangeIt = new Range(document.createElement('div'));
+        RangeIt = new Range(el);
+
         expect(RangeIt.container).toBeDefined();
     });
 
@@ -102,13 +105,16 @@ describe("Instance methods", function() {
         it("3.1.2 Parameter can be a String", function() {
             RangeIt = new Range();
 
-            expect(RangeIt.append('body')).toBeTruthy();
+            expect(RangeIt.append('body')).toBe(true);
         });
 
         it("3.1.3 Parameter can be a DOM element", function() {
+            var el = document.createElement('div');
+            document.body.appendChild(el);
+
             RangeIt = new Range();
 
-            expect(RangeIt.append(document.createElement('div'))).toBeTruthy();
+            expect(RangeIt.append(el)).toBe(true);
         });
 
         it("3.1.4 If parameter not String and not Element it returns false", function() {
@@ -120,28 +126,37 @@ describe("Instance methods", function() {
         it("3.1.5 We can't append twice", function() {
             RangeIt = new Range();
 
-            expect(RangeIt.append('body')).toBeTruthy();
-            expect(RangeIt.append('body')).toBeFalsy();
+            expect(RangeIt.append('body')).toBe(true);
+            expect(RangeIt.append('body')).toBe(false);
         });
 
         it("3.1.6 When instance created with new Element parameter we can append", function() {
             var el = document.createElement('div');
+
             RangeIt = new Range(el);
 
-            expect(RangeIt.append('body')).toBeTruthy();
+            expect(RangeIt.appended).toBe(false);
+            expect(RangeIt.append('body')).toBe(true);
         });
 
-        it("3.1.7 When instance created with queried Element parameter we can append", function() {
-            var el = document.querySelector('body');
+        it("3.1.7 When instance created with queried Element parameter we can't append", function() {
+            var el = document.createElement('div');
+            document.body.appendChild(el);
+
             RangeIt = new Range(el);
 
-            expect(RangeIt.append('body')).toBeFalsy();
+            expect(RangeIt.appended).toBe(true);
+            expect(RangeIt.append('body')).toBe(false);
         });
 
-        it("3.1.8 When instance created with String parameter we can't append", function() {
-            RangeIt = new Range('body');
+        it("3.1.8 When instance created with String parameter we can't append if queried by it", function() {
+            var el = document.createElement('div');
+            document.body.appendChild(el);
 
-            expect(RangeIt.append('body')).toBeFalsy();
+            RangeIt = new Range('div');
+
+            expect(RangeIt.appended).toBe(true);
+            expect(RangeIt.append('body')).toBe(false);
         });
 
     it("3.2 Extend method", function() {
@@ -150,19 +165,19 @@ describe("Instance methods", function() {
         expect(RangeIt.extend).toBeDefined();
     });
         it("3.2.1 Target must be an Object", function() {
-            RangeIt = new Range('body');
+            RangeIt = new Range();
 
             expect(RangeIt.extend('s')).toBeUndefined();
         });
 
         it("3.2.2 Must return an Object", function() {
-            RangeIt = new Range('body');
+            RangeIt = new Range();
 
             expect(typeof RangeIt.extend({})).toEqual('object');
         });
 
         it("3.2.3 Returned object can't be equal of any argument", function() {
-            RangeIt = new Range('body');
+            RangeIt = new Range();
 
             expect(typeof RangeIt.extend({a: 1}, {a: 1})).not.toEqual({a: 1});
         });

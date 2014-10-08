@@ -13,49 +13,63 @@
             }
         }
 
+
+
         /* --------
          * instance options
         */
-        this.options = this.extend({}, RangeJS.defaults);
+        this.options = RangeJS.defaults;
 
         /* --------
-         * instance container
+         * extend default options
         */
-        this.container = document.createElement('div');
+        if (typeof options === 'object') {
+            this.options = this.extend({}, this.options, options);
+        }
+
+
 
         /* --------
          * instance container
-         * is appended to the DOM
+        /* --------
+         * instance container
+         * is not appended to the DOM
         */
         this.appended = false;
 
         /* --------
-         * if element is String
+         * default DOM element
+         * if 'element' attribute not
+        */
+        this.container = document.createElement('div');
+
+        /* --------
+         * if 'element' is String
         */
         if (typeof element === 'string') {
             try {
-                element = document.querySelector(element);
+                element = document.querySelector(element) || this.container;
             }
             catch(err) {
                 console.error(err);
+                return {};
             }
         }
 
         /* --------
-         * if element is DOM Element
+         * if 'element' is DOM Element
         */
         if (element instanceof Element) {
 
-            if (element.parentNode || element.parentElement) {
-                this.appended = true;
+            if (element.tagName === 'HTML' || element.tagName === 'BODY') {
+                console.error('Element ' + element.tagName + ' can\'t be a container.');
+                return;
             }
 
-            this.container = element;
+            this.appended = !!(element.parentNode || element.parentElement);
         }
 
-        if (typeof options === 'object') {
-            this.options = this.extend(this.options, options);
-        }
+        this.container = element || this.container;
 
         /* --------
          * set attribute for container
@@ -71,6 +85,7 @@
             this.container.style.backgroundColor = 'orange';
             this.container.style.position = 'relative';
         }
+
 
         // this.labelsPosition = [];
         // this.container = document.querySelector(element);
