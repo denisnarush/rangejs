@@ -16,7 +16,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'src/rangejs.js',
-      'src/rangejs.spec.js',
+      'src/rangejs.spec.js'
     ],
 
 
@@ -65,7 +65,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['Chrome', 'IE'],
 
 
     // Continuous Integration mode

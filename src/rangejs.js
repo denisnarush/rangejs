@@ -50,8 +50,8 @@
             try {
                 element = document.querySelector(element) || this.container;
             }
-            catch(err) {
-                console.error(err);
+            catch(error) {
+                console.error(error);
                 return {};
             }
         }
@@ -63,7 +63,7 @@
 
             if (element.tagName === 'HTML' || element.tagName === 'BODY') {
                 console.error('Element ' + element.tagName + ' can\'t be a container.');
-                return;
+                return {};
             }
 
             this.appended = !!(element.parentNode || element.parentElement);
