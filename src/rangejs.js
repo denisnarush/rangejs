@@ -78,13 +78,10 @@
 
         /* --------
          * set css for instance
-         * if container not appended
         */
-        if(!this.appended) {
-            this.container.style.height = this.options.height + 'px';
-            this.container.style.backgroundColor = 'orange';
-            this.container.style.position = 'relative';
-        }
+        this.container.style.height = this.options.height + 'px';
+        this.container.style.backgroundColor = 'orange';
+        this.container.style.position = 'relative';
 
 
         // this.labelsPosition = [];
