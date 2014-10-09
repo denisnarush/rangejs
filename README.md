@@ -22,7 +22,7 @@ add to body:
 create instance:
 ```bash
 <script type="text/javascript">
-	var RangeIt = new RangeJS(document.getElementById('RangeIt'));
+	var RangeIt = new RangeJS("#RangeIt");
 </script>
 ```
 
@@ -38,7 +38,7 @@ run karma
 =====
 ```bash
 $ cd rangejs/node_modules/karma/bin/
-$ ./karma start ../../../karma.js
+$ ./karma start ../../../karma-config.js
 ```
 
 coverage
