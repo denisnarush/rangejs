@@ -13,20 +13,17 @@
             }
         }
 
-
-
         /* --------
          * instance options
         */
-        this.options = RangeJS.defaults;
+        this.options = this.extend({}, RangeJS.defaults);
 
         /* --------
          * extend default options
         */
         if (typeof options === 'object') {
-            this.options = this.extend({}, this.options, options);
+            this.options = this.extend({}, RangeJS.defaults, options);
         }
-
 
 
         /* --------
@@ -51,7 +48,7 @@
                 element = document.querySelector(element) || this.container;
             }
             catch(error) {
-                console.error(error);
+                console.error('Wrong argument for query element.');
                 return {};
             }
         }
@@ -151,7 +148,15 @@
 
             for (var i = 1; i < arguments.length; i++) {
                 for(var name in arguments[i]) {
+
                     target[name] = arguments[i][name];
+
+                    if (arguments[i][name] instanceof Array) {
+                        target[name] = [];
+                        for (var j = 0; j < arguments[i][name].length; j++){
+                            target[name].push(arguments[i][name][j]);
+                        }
+                    }
                 }
             }
 
@@ -161,14 +166,18 @@
          * Add value
         */
         addValue: function (value) {
+            if (typeof value !== 'number') {
+                return false;
+            }
+
             if (value < this.options.min || value > this.options.max) {
                 return false;
             }
 
-            var l = this.options.value.length;
-            while (l){
-                if (this.options.value[--l] === value) {
+            var count = this.options.value.length;
 
+            while (count){
+                if (this.options.value[--count] === value) {
                     return false;
                 }
             }
@@ -177,12 +186,12 @@
 
             return true;
         }
+        // getValue: function () {
+        //     return this.options.value;
+        // },
         // refresh: function () {
             // remove all carrets elements
             // create create new carrets elements
-        // },
-        // getValue: function () {
-        //     return this.options.value;
         // },
         // destroy: function () {
             // destroy all events, html

@@ -181,10 +181,11 @@ describe("Instance methods", function() {
 
         expect(RangeIt.extend).toBeDefined();
     });
-        it("3.2.1 Target must be an Object", function() {
+        it("3.2.1 Argument must be an Object", function() {
             var RangeIt = new Range();
 
             expect(RangeIt.extend('s')).toBeUndefined();
+            expect(RangeIt.extend(1)).toBeUndefined();
         });
 
         it("3.2.2 Must return an Object", function() {
@@ -195,8 +196,41 @@ describe("Instance methods", function() {
 
         it("3.2.3 Returned object can't be equal of any argument", function() {
             var RangeIt = new Range();
+            var obj = {a: 1};
 
-            expect(typeof RangeIt.extend({a: 1}, {a: 1})).not.toEqual({a: 1});
+            expect(typeof RangeIt.extend({a: 1}, obj)).not.toEqual(obj);
+            expect(typeof RangeIt.extend(obj, {a: 1})).not.toEqual(obj);
+            expect(typeof RangeIt.extend(obj, obj)).not.toEqual(obj);
+        });
+
+    it("3.3 Add value method", function() {
+        var RangeIt = new Range();
+
+        expect(RangeIt.addValue).toBeDefined();
+    });
+        it("3.3.1 Argument must be a Number", function() {
+            var RangeIt = new Range();
+
+            expect(RangeIt.addValue(1)).toBe(true);
+            expect(RangeIt.addValue("1")).toBe(false);
+            expect(RangeIt.addValue({value: 1})).toBe(false);
+        });
+
+        it("3.3.2 Can't be less then Min or more then Max", function() {
+            var RangeIt = new Range();
+
+            expect(RangeIt.addValue(1)).toBe(true);
+            expect(RangeIt.addValue(0)).toBe(true);
+            expect(RangeIt.addValue(10)).toBe(true);
+            expect(RangeIt.addValue(-1)).toBe(false);
+            expect(RangeIt.addValue(11)).toBe(false);
+        });
+
+        it("3.3.3 Don't add new value if this value is exist", function() {
+            var RangeIt = new Range();
+
+            expect(RangeIt.addValue(1)).toBe(true);
+            expect(RangeIt.addValue(1)).toBe(false);
         });
 });
 
