@@ -3,6 +3,8 @@
     // constructor
     var RangeJS = function (element, options) {
 
+        var siht = this;
+
         /* --------
          * if passed one argument
          * check is it an options
@@ -13,32 +15,32 @@
             }
         }
 
+
+
         /* --------
          * instance options
         */
         this.options = this.extend({}, RangeJS.defaults);
 
         /* --------
-         * extend default options
+         * extend options
         */
         if (typeof options === 'object') {
             this.options = this.extend({}, RangeJS.defaults, options);
         }
 
 
+
         /* --------
          * instance container
+        */
+        this.container = document.createElement('div');
+
         /* --------
          * instance container
          * is not appended to the DOM
         */
         this.appended = false;
-
-        /* --------
-         * default DOM element
-         * if 'element' attribute not
-        */
-        this.container = document.createElement('div');
 
         /* --------
          * if 'element' is String
@@ -81,7 +83,23 @@
         this.container.style.position = 'relative';
 
 
-        // this.labelsPosition = [];
+
+        /* --------
+         * create labels
+        */
+        var count = this.options.value.length;
+
+        while (count) {
+            var value = this.options.value[--count];
+            var element = this.createLabelFromValue(value);
+
+            this.container.appendChild(element);
+        }
+
+
+
+
+
         // this.container = document.querySelector(element);
 
         //set options
@@ -97,21 +115,66 @@
         // this.onValueChange = function () {};
     };
 
-    // default options
+
+
+    // DEFAULT
     RangeJS.defaults = {
         min: 0,
         max: 10,
         height: 2,
-        value: [3]
+        value: [1, 3, 7.35]
     };
 
-    // public
+
+
+    // PUBLIC
     RangeJS.prototype = {
+        /* --------
+         * Label
+        */
+        createLabelFromValue: function (value) {
+            var label = document.createElement('i');
+
+            label.style.backgroundColor = 'black';
+            label.style.height          = this.options.height + 4 + 'px';
+            label.style.width           = 1 + 'px';
+            label.style.position        = 'absolute';
+            label.style.top             = 4 / 2 * -1 + 'px';
+            label.style.left            = this.getPositionFromValue(value);
+
+            return label;
+        },
+        /* --------
+         * Label position from value
+        */
+        getPositionFromValue: function (value) {
+            var diapason = this.getDiapason();
+
+            return value * 100 / diapason + '%';
+        },
+        /* --------
+         * Value from label position
+        */
+        getValueFromPosition: function (position) {
+            var diapason = this.getDiapason();
+
+            /* --------
+             * position can be string like '35.5%'
+            */
+            var position = parseFloat(position);
+
+            return diapason * position / 100;
+        },
+        /* --------
+         * Diapason
+        */
+        getDiapason: function () {
+            return this.options.max - this.options.min;
+        },
         /* --------
          * Append container to the DOM
         */
         append: function (element) {
-
             /* --------
              * Don't append twice
             */
