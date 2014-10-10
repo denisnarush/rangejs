@@ -3,8 +3,6 @@
     // constructor
     var RangeJS = function (element, options) {
 
-        var siht = this;
-
         /* --------
          * if passed one argument
          * check is it an options
@@ -100,10 +98,7 @@
 
 
 
-        // this.container = document.querySelector(element);
 
-        //set options
-        // makeOptions.call(this, options, RangeJS.defaults);
         //render elements
         // render.call(this);
         //bind handlers for elements
@@ -122,7 +117,7 @@
         min: 0,
         max: 10,
         height: 2,
-        value: [1, 3, 7.35]
+        value: [3, 7.35]
     };
 
 
