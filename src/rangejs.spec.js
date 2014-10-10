@@ -107,22 +107,22 @@ describe("Constructor default options", function() {
 });
 
 describe("Instance methods", function() {
-    it("3.1 Append method", function() {
+    it("3.1 Append container method", function() {
         var RangeIt = new Range();
 
-        expect(RangeIt.append).toBeDefined();
+        expect(RangeIt.appendContainer).toBeDefined();
     });
 
         it("3.1.1 When parameter is empty it returns false", function() {
             var RangeIt = new Range();
 
-            expect(RangeIt.append()).toBe(false);
+            expect(RangeIt.appendContainer()).toBe(false);
         });
 
         it("3.1.2 Parameter can be a String", function() {
             var RangeIt = new Range();
 
-            expect(RangeIt.append('body')).toBe(true);
+            expect(RangeIt.appendContainer('body')).toBe(true);
         });
 
         it("3.1.3 Parameter can be a DOM element", function() {
@@ -131,20 +131,21 @@ describe("Instance methods", function() {
 
             var RangeIt = new Range();
 
-            expect(RangeIt.append(el)).toBe(true);
+            expect(RangeIt.appendContainer(el)).toBe(true);
         });
 
         it("3.1.4 If parameter not String and not Element it returns false", function() {
             var RangeIt = new Range();
 
-            expect(RangeIt.append([])).toBe(false);
+            expect(RangeIt.appendContainer([])).toBe(false);
+            expect(RangeIt.appendContainer({})).toBe(false);
         });
 
         it("3.1.5 We can't append twice", function() {
             var RangeIt = new Range();
 
-            expect(RangeIt.append('body')).toBe(true);
-            expect(RangeIt.append('body')).toBe(false);
+            expect(RangeIt.appendContainer('body')).toBe(true);
+            expect(RangeIt.appendContainer('body')).toBe(false);
         });
 
         it("3.1.6 When instance created with new Element parameter we can append", function() {
@@ -153,7 +154,7 @@ describe("Instance methods", function() {
             var RangeIt = new Range(el);
 
             expect(RangeIt.appended).toBe(false);
-            expect(RangeIt.append('body')).toBe(true);
+            expect(RangeIt.appendContainer('body')).toBe(true);
         });
 
         it("3.1.7 When instance created with queried Element parameter we can't append", function() {
@@ -163,7 +164,7 @@ describe("Instance methods", function() {
             var RangeIt = new Range(el);
 
             expect(RangeIt.appended).toBe(true);
-            expect(RangeIt.append('body')).toBe(false);
+            expect(RangeIt.appendContainer('body')).toBe(false);
         });
 
         it("3.1.8 When instance created with String parameter we can't append if queried by it", function() {
@@ -173,7 +174,7 @@ describe("Instance methods", function() {
             var RangeIt = new Range('div');
 
             expect(RangeIt.appended).toBe(true);
-            expect(RangeIt.append('body')).toBe(false);
+            expect(RangeIt.appendContainer('body')).toBe(false);
         });
 
     it("3.2 Extend method", function() {

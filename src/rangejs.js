@@ -169,7 +169,7 @@
         /* --------
          * Append container to the DOM
         */
-        append: function (element) {
+        appendContainer: function (element) {
             /* --------
              * Don't append twice
             */
