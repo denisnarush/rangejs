@@ -41,6 +41,11 @@
         this.appended = false;
 
         /* --------
+         * instance labels
+        */
+        this.labels = [];
+
+        /* --------
          * if 'element' is String
         */
         if (typeof element === 'string') {
@@ -79,6 +84,7 @@
         this.container.style.height = this.options.height + 'px';
         this.container.style.backgroundColor = 'orange';
         this.container.style.position = 'relative';
+        this.container.style.display = 'block';
 
 
 
@@ -91,7 +97,9 @@
             var value = this.options.value[--count];
             var element = this.createLabelFromValue(value);
 
-            this.container.appendChild(element);
+            if (element) {
+                this.appendLabel(element);
+            }
         }
 
 
@@ -125,10 +133,30 @@
     // PUBLIC
     RangeJS.prototype = {
         /* --------
-         * Label
+         * Create one label
         */
         createLabelFromValue: function (value) {
+            if (!value) {
+                return false;
+            }
+
+            // value must be in array of options.value
+            /*
+                if (value not in this.options.value) {
+                    return false;
+                }
+            */
+
+            // don't create label if it already exists
+            /*
+                if (getLabelByValue) {
+                    return false;
+                }
+            */
+
             var label = document.createElement('i');
+
+            label.appended = false;
 
             label.style.backgroundColor = 'black';
             label.style.height          = this.options.height + 4 + 'px';
@@ -136,6 +164,9 @@
             label.style.position        = 'absolute';
             label.style.top             = 4 / 2 * -1 + 'px';
             label.style.left            = this.getPositionFromValue(value);
+
+            // put label to the instance
+            this.labels.push(label);
 
             return label;
         },
@@ -193,6 +224,25 @@
             }
 
             return this.appended;
+        },
+        /* --------
+         * Append label to container
+        */
+        appendLabel: function (element) {
+            /* --------
+             * Don't append twice
+            */
+            if (element.appended) {
+                return false;
+            }
+
+            /* --------
+             * appending
+            */
+            this.container.appendChild(element);
+            element.appended = true;
+
+            return true;
         },
         /* --------
          * Extend of object
