@@ -1,11 +1,5 @@
 {
-  "name": "Range",
+  "name": "range",
   "author": "Denis Narush <child.denis@gmail.com>",
-  "dependencies": {
-    "karma": "^0.12.23",
-    "karma-chrome-launcher": "^0.1.4",
-    "karma-ie-launcher": "^0.1.5",
-    "karma-coverage": "^0.2.6",
-    "karma-jasmine": "^0.1.5"
-  }
+  "dependencies": {}
 }
